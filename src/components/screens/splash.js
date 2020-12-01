@@ -8,22 +8,30 @@
  * @License: Apache License v2.0
  */
 
-import React, { Component } from 'react';
-import { Image, Text, StyleSheet, ActivityIndicator } from 'react-native';
+import React, {Component} from 'react';
+import {
+  Image,
+  Text,
+  StyleSheet,
+  ActivityIndicator,
+  ImageBackground,
+} from 'react-native';
 
 export default class Splash extends Component {
   render() {
     return (
-    <Image style={styles.backgroundImage} source={require('../../Images/onboarding_screen.png')}>
-      <ActivityIndicator
-        style={[styles.centering]}
-        size="large"
-          color="white"
-      >
-      </ActivityIndicator>
-         <Text style={styles.text}>Please wait, fetching your location ..... </Text>
-     </Image>
-      );
+      <ImageBackground
+        style={styles.backgroundImage}
+        source={require('../../Images/images.png')}>
+        <ActivityIndicator
+          style={[styles.centering]}
+          size="large"
+          color="white"></ActivityIndicator>
+        <Text style={styles.text}>
+          Please wait, fetching your location .....{' '}
+        </Text>
+      </ImageBackground>
+    );
   }
 }
 
@@ -35,15 +43,15 @@ const styles = StyleSheet.create({
     width: null,
   },
   text: {
-        textAlign: 'center',
-        color: 'white',
-        backgroundColor: 'rgba(0,0,0,0)',
-        fontSize: 18,
-        paddingBottom: 100
-    },
-    centering: {
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
- },
+    textAlign: 'center',
+    color: 'white',
+    backgroundColor: 'rgba(0,0,0,0)',
+    fontSize: 18,
+    paddingBottom: 100,
+  },
+  centering: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 });

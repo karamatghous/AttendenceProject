@@ -11,14 +11,24 @@
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "react-native-community/async-storage",
+    "@react-native-community/art": "^1.2.0",
+    "@react-native-community/geolocation": "^2.0.2",
     "firebase": "^8.1.1",
     "react": "16.13.1",
     "react-native": "0.63.3",
+    "react-native-android-location-services-dialog-box": "^2.8.2",
+    "react-native-camera": "^3.40.0",
+    "react-native-dotenv": "^2.4.2",
+    "react-native-fcm": "^16.2.4",
     "react-native-firebase": "^5.6.0",
+    "react-native-geocoder": "^0.5.0",
     "react-native-gesture-handler": "^1.9.0",
+    "react-native-progress": "^4.1.2",
     "react-native-reanimated": "^1.13.2",
-    "react-native-router-flux": "^4.2.0",
-    "react-native-screens": "^2.15.0"
+    "react-native-router-flux": "^3.38.0",
+    "react-native-screens": "^2.15.0",
+    "sha1": "^1.1.1",
+    "superagent": "^6.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",

@@ -40,6 +40,7 @@ class LoginScreen extends Component {
 */
   onloginSubmit() {
     const {email, password} = this.state;
+    console.log('onloginSubmit', email, password);
     /*Setting state variables to handle error and loading params */
     this.setState({
       error: '',
@@ -51,10 +52,12 @@ class LoginScreen extends Component {
       .auth()
       .signInWithEmailAndPassword(email, password)
       .then(() => {
+        console.log('response');
         this.loginSuccessHandle();
       })
       .catch((e) => {
-        this.loginFailedHandle();
+        console.log('error');
+        this.loginFailedHandle(e);
         alert(e);
       });
   }
@@ -82,18 +85,21 @@ class LoginScreen extends Component {
           this.loginSuccessHandle();
           /*Firebase restricts the amount of configurable params that can be passed while
         creating users. It allows a displayName and image(Not a requirement)*/
-          user.updateProfile({
+          user.user.updateProfile({
             displayName: name,
           });
           /*Fetchinh the current user Data from firebase*/
           const {currentUser} = firebase.auth();
           /*There are two DB storage paths created, this one is  to store extra custom
         info of the users*/
-          firebase.database().ref(`/employees/info/${currentUser.uid}/`).push({
-            name,
-            email,
-            id,
-          });
+          firebase
+            .database()
+            .ref(`/employees/info/${currentUser._user.uid}/`)
+            .push({
+              name,
+              email,
+              id,
+            });
           this.loginSuccessHandle();
         })
         .catch(this.loginFailedHandle.bind(this));
@@ -109,6 +115,7 @@ class LoginScreen extends Component {
   and redirects the users to the camView using Actions handler(react-native-router-flux)
   */
   loginSuccessHandle = () => {
+    console.log('Q G CHASS AE KA NAE');
     Actions.mainCamView();
     this.setState({
       email: '',
@@ -119,7 +126,7 @@ class LoginScreen extends Component {
   };
   /*In case of a failed login/create User, the state variables are reset*/
   loginFailedHandle(w) {
-    console.log(w.message);
+    console.log(w);
     this.setState({
       error: 'Authentication Failed',
       loading: false,
@@ -238,7 +245,7 @@ class LoginScreen extends Component {
                 <Input
                   value={this.state.email}
                   label="Email :"
-                  placeholder="user@chumbak.in"
+                  placeholder="example@email.com"
                   onChangeText={(email) => this.setState({email})}
                 />
               </CardSection>
@@ -261,7 +268,7 @@ class LoginScreen extends Component {
             </Card>
           </KeyboardAvoidingView>
           <View style={styles.logoContainer}>
-            <Image source={require('../../Images/icon.png')} />
+            <Image source={require('../../Images/images.png')} />
           </View>
         </View>
       </ScrollView>

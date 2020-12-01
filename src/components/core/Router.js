@@ -8,10 +8,10 @@
  * @License: Apache License v2.0
  */
 
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 /*react-native-router-flux is the principal source of navigation and more..*/
-import { Scene, Router, Actions, ActionConst } from 'react-native-router-flux';
-import firebase from 'firebase';
+import {Scene, Router, Actions, ActionConst} from 'react-native-router-flux';
+import firebase from 'react-native-firebase';
 
 /*Login View Component*/
 import LoginScreen from '../screens/LoginScreen';
@@ -36,7 +36,7 @@ export default class RouterComponent extends Component {
   render() {
     return (
       /*react-native-router-flux routing Stack*/
-      <Router sceneStyle={{ paddingTop: 65 }} >
+      <Router sceneStyle={{paddingTop: 65}}>
         {/*Login Screen RouterScene with logggedIn State check linked to
           the LoginScreen Component*/}
         <Scene key="auth" type={ActionConst.RESET}>
@@ -46,8 +46,12 @@ export default class RouterComponent extends Component {
             title="Login/SignUp"
             initial={!this.props.loggedIn}
           />
-        {/*ForgotPassword RouterScene linkedto the ForgotPassword Component*/}
-          <Scene key="passwordReset" component={ForgotPassword} title="Forgot Password" />
+          {/*ForgotPassword RouterScene linkedto the ForgotPassword Component*/}
+          <Scene
+            key="passwordReset"
+            component={ForgotPassword}
+            title="Forgot Password"
+          />
         </Scene>
         {/*MainCam route with loggedIn state props*/}
         <Scene
@@ -55,9 +59,8 @@ export default class RouterComponent extends Component {
           rightTitle="Logout"
           onRight={this.logoutHandler.bind(this)}
           type={ActionConst.RESET}
-          initial={this.props.loggedIn}
-        >
-        {/*AttendanceCam route with AttendanceCam component Integration
+          initial={this.props.loggedIn}>
+          {/*AttendanceCam route with AttendanceCam component Integration
           with lat/long state props */}
           <Scene
             key="AttendanceCamScreen"
@@ -67,7 +70,7 @@ export default class RouterComponent extends Component {
             long={this.props.long}
             type={ActionConst.REFRESH}
           />
-        {/*Upload Screen route with UploadRequest component Integration */}
+          {/*Upload Screen route with UploadRequest component Integration */}
           <Scene
             key="initUpload"
             title="Upload Screen"
