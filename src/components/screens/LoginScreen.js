@@ -1,13 +1,3 @@
-/**
- * @Author: Harsha Attray <harsha>
- * @Date:   2017-08-17T18:15:36+05:30
- * @Project: Retailstore-Attendance-Monitor
- * @Filename: LoginScreen.js
- * @Last modified by:   harsha
- * @Last modified time: 2017-08-22T15:33:11+05:30
- * @License: Apache License v2.0
- */
-
 import React, {Component} from 'react';
 import {
   View,
@@ -17,14 +7,10 @@ import {
   ScrollView,
 } from 'react-native';
 import firebase from 'react-native-firebase';
-/* Navigation driver for the app */
 import {Actions} from 'react-native-router-flux';
-/*Importing Common UI-components*/
 import {Button, Card, CardSection, Input, Loader} from '../common/';
 
-/*Login Screen Component*/
 class LoginScreen extends Component {
-  /* Defining state variables which can be manipulated later*/
   state = {
     email: '',
     password: '',
@@ -35,19 +21,15 @@ class LoginScreen extends Component {
     loading: false,
     userCheck: false,
   };
-  /*onloginSubmit is a standard firebase email and password Authentication call
-  it takes in user email and password params based on the state values
-*/
+
   onloginSubmit() {
     const {email, password} = this.state;
     console.log('onloginSubmit', email, password);
-    /*Setting state variables to handle error and loading params */
     this.setState({
       error: '',
       loading: true,
     });
-    /*User login call with two outcomes- On success the loginSuccessHandle is executed
-    onError an alert with the error message is  displayed on the screen*/
+
     firebase
       .auth()
       .signInWithEmailAndPassword(email, password)
@@ -61,37 +43,28 @@ class LoginScreen extends Component {
         alert(e);
       });
   }
-  /*This function call is used to Create user. It derives the email and username
-   details from the state variables with additional params passed in the firebase function call*/
+
   onUserCreate() {
     this.userCreate();
     const {email, password, fname, lname, id} = this.state;
-    /*Making First name mandatory*/
     if (this.state.fname) {
-      /*Setting state params*/
       this.setState({
         error: '',
         loading: true,
       });
-      /*Appending first name and Last name .. That was the requirement*/
       const name = fname + ' ' + lname;
-      /*Standard firebase create User call with email and password . it returns the user data*/
       firebase
         .auth()
         .createUserWithEmailAndPassword(email, password)
         .then((user) => {
           console.log('user', user);
-          /*On success call*/
           this.loginSuccessHandle();
-          /*Firebase restricts the amount of configurable params that can be passed while
-        creating users. It allows a displayName and image(Not a requirement)*/
+
           user.user.updateProfile({
             displayName: name,
           });
-          /*Fetchinh the current user Data from firebase*/
           const {currentUser} = firebase.auth();
-          /*There are two DB storage paths created, this one is  to store extra custom
-        info of the users*/
+
           firebase
             .database()
             .ref(`/employees/info/${currentUser._user.uid}/`)
@@ -111,9 +84,6 @@ class LoginScreen extends Component {
     }
   }
 
-  /*Login successful state handler which resets the state variables
-  and redirects the users to the camView using Actions handler(react-native-router-flux)
-  */
   loginSuccessHandle = () => {
     console.log('Q G CHASS AE KA NAE');
     Actions.mainCamView();
@@ -124,7 +94,6 @@ class LoginScreen extends Component {
       error: '',
     });
   };
-  /*In case of a failed login/create User, the state variables are reset*/
   loginFailedHandle(w) {
     console.log(w);
     this.setState({
@@ -132,20 +101,17 @@ class LoginScreen extends Component {
       loading: false,
     });
   }
-  /*This function triggers the password reset route using the Action-Scene traversal*/
   passwordReset() {
     Actions.passwordReset();
   }
-  /*Template switch function for setting state variables that offer conditional rendering of
-  createUser buttons and login buttons*/
+
   userCreate() {
     this.setState({
       userCheck: true,
       loading: false,
     });
   }
-  /*Template switch function for setting state variables that offer conditional rendering of
-  createUser buttons and login buttons*/
+
   initScreen() {
     this.setState({
       userCheck: false,
@@ -153,7 +119,6 @@ class LoginScreen extends Component {
       error: '',
     });
   }
-  /*Render loader / button conditionally*/
   loadingCheck() {
     if (this.state.loading) {
       return <Loader size="small" />;
@@ -170,7 +135,6 @@ class LoginScreen extends Component {
       </Button>
     );
   }
-  /*switch trigger between create user and login screens*/
   toggleSignup() {
     if (this.state.loading) {
       return <Loader size="small" />;
@@ -198,7 +162,6 @@ class LoginScreen extends Component {
       </Card>
     );
   }
-  /*Create user form template*/
   createUserForm() {
     if (this.state.userCheck) {
       return (
@@ -233,7 +196,6 @@ class LoginScreen extends Component {
       );
     }
   }
-  /*Render function for createUser/ loginUser*/
   render() {
     return (
       <ScrollView>
@@ -267,20 +229,16 @@ class LoginScreen extends Component {
               {this.toggleSignup()}
             </Card>
           </KeyboardAvoidingView>
-          <View style={styles.logoContainer}>
-            <Image source={require('../../Images/images.png')} />
-          </View>
         </View>
       </ScrollView>
     );
   }
 }
 
-/*Styles for the LoginScreen Component*/
-
 const styles = {
   loginStyles: {
     paddingTop: 100,
+    color: 'blue',
   },
   logoContainer: {
     paddingTop: 50,
@@ -299,12 +257,12 @@ const styles = {
     textAlign: 'center',
     lineHeight: 40,
     paddingTop: 20,
-    color: 'orange',
+    color: 'blue',
     paddingBottom: 20,
   },
   text: {
     textAlign: 'center',
-    color: 'orange',
+    color: 'blue',
     backgroundColor: 'rgba(0,0,0,0)',
     fontSize: 16,
   },

@@ -1,13 +1,3 @@
-/**
- * @Author: Harsha Attray <harsha>
- * @Date:   2017-08-17T18:15:36+05:30
- * @Project: Retailstore-Attendance-Monitor
- * @Filename: AttendanceCam.js
- * @Last modified by:   harsha
- * @Last modified time: 2018-02-22T12:56:45+05:30
- * @License: Apache License v2.0
- */
-
 import React, {Component} from 'react';
 import {
   Dimensions,
@@ -16,20 +6,13 @@ import {
   Image,
   TouchableOpacity,
 } from 'react-native';
-/* importing required modules from the react-native-camera Component */
 import {RNCamera} from 'react-native-camera';
-/**/
 import * as firebase from 'react-native-firebase';
-/* Component for implementing reverse-Geocoding */
 import Geocoder from 'react-native-geocoder';
-/* Navigation driver for the app */
 import {Actions} from 'react-native-router-flux';
-/* Adds intuitive loading components to the app */
 import * as Progress from 'react-native-progress';
 
-/*Component for the camera module of the application*/
 export default class AttendanceCam extends Component {
-  /* Defining state variables which can be manipulated later*/
   state = {
     cameraType: 'front',
     mirrorMode: true,
@@ -43,17 +26,12 @@ export default class AttendanceCam extends Component {
     loadingCred: false,
   };
 
-  /*This is the  reverse Geo-coding component that takes in the lat/Long values
-  from the navigator initialised in the App.js */
   async takeLocation() {
-    /*NY object consits of the lat  long params passed to the component
-    'AttendanceCam' component */
     const NY = {
       lat: this.props.lat,
       lng: this.props.long,
     };
-    /*The Geocoder plugin takes the latlong state values from the NY object and returns the
-reverseGeocoded data containing street level accuray*/
+
     try {
       const res = await Geocoder.geocodePosition(NY);
 
@@ -62,61 +40,40 @@ reverseGeocoded data containing street level accuray*/
         streetName: res[0].streetName,
         locality: res[0].formattedAddress,
       });
-    } catch (err) {
-      // console.log(err);
-    }
+    } catch (err) {}
   }
 
-  /*The takePicture function is the trigger point for the camera image capture.
-This is bound to the onPress call on the render metod of the AttendanceCam component*/
   takePicture() {
-    /* setting state variable to manipulate loading component conditionally.
-  Takes in  a boolean value */
     this.setState({
       loadingCred: true,
     });
-    /*react-native-camera module gives the option to pass in params to the generated image data
-   Add the additional params to the options object
-  */
+
     const options = {};
-    /*takeLocation() Function call is an Async function call triggered within this function
-      returns the state variables with updated streetName and locality data
-      (We are restricting it to these two variables here , but the response contains
-      much more detailed params)
-     */
+
     this.takeLocation();
-    //options.location = ...
-    /*camera.capture is a react-native-camera module based trigger which takes in metadata from the
-     options variable above and returns principally the path(saved file path) of the generated image
-       */
+
     this.camera
       .takePictureAsync({metadata: options})
       .then((data) => {
         const SavedImage = data.uri;
         if (SavedImage) {
-          /*Here we get the unique id that firebase generates for each use using firebase.auth()  */
           const {currentUser} = firebase.auth();
           console.log('currentUser', currentUser);
 
-          /*The path of user-data to be stored in the firebasedB is mentioned here
-        along with the uid captured from the above call */
           const userPath = '/employees/records/' + `${currentUser._user.uid}`;
           console.log('userPath', userPath);
 
-          /*This section here checks if the user has already submitted their attendance previously*/
           firebase
             .database()
             .ref(userPath)
             .on('value', (snapshot) => {
               console.log('snapshot', snapshot);
-              /*This is a standard Fireabase data retrieval call which returns
-           data into the snapshot variable*/
+
               if (snapshot.val()) {
                 const dataStore = snapshot.val();
                 console.log(dataStore);
                 const lastCheck = dataStore[Object.keys(dataStore)[0]];
                 this.setState({
-                  /*State variable manipulation based on data fetched from firebase*/
                   checkTime: lastCheck.date,
                   checkSchedule: lastCheck.schedule,
                 });
@@ -124,10 +81,7 @@ This is bound to the onPress call on the render metod of the AttendanceCam compo
               this.setState({
                 loadingCred: false,
               });
-              /*Actions is a react-native-router-flux function used to traverse through
-          preassigned routes. Here we are passing params with their updated values which will be
-          accessed in the traversed state. Much like a normal param in a component
-          */
+
               Actions.initUpload({
                 SavedImage,
                 streetName: this.state.streetName,
@@ -136,20 +90,11 @@ This is bound to the onPress call on the render metod of the AttendanceCam compo
                 checkSchedule: this.state.checkSchedule,
               });
             });
-          /*Firebase check for first time user attendance submission ends here*/
-
-          // const newReference = firebase.database().ref(userPath).push();
-
-          // console.log('Auto generated key: ', newReference.key);
-
-          // newReference.set(SavedImage).then(() => console.log('Data updated.'));
         }
       })
       .catch((err) => console.error(err));
   }
 
-  /*captureSwitch is a conditional template switch to show the progress view or the camera
-  snapper based on the loadingCred state variable value */
   captureSwitch() {
     if (this.state.loadingCred) {
       return (
@@ -160,7 +105,7 @@ This is bound to the onPress call on the render metod of the AttendanceCam compo
         </View>
       );
     }
-    /*Standard default return view if the loadingCred variable is set to false*/
+
     return (
       <View style={styles.buttonContainer}>
         <View style={styles.smallButtonContainer}>
@@ -174,12 +119,10 @@ This is bound to the onPress call on the render metod of the AttendanceCam compo
       </View>
     );
   }
-  /*Main render()  section for the camera component */
+
   render() {
     return (
       <View style={styles.main}>
-        {/*Camera module imported from  react-native-camera with all the necessary
-         accessibility options */}
         <RNCamera
           ref={(cam) => {
             this.camera = cam;
@@ -189,14 +132,13 @@ This is bound to the onPress call on the render metod of the AttendanceCam compo
           mirrorImage={this.state.mirrorMode}
           playSoundOnCapture={false}
         />
-        {/*captureSwitch() used to switch between views based on user interaction*/}
+
         {this.captureSwitch()}
       </View>
     );
   }
 }
 
-/* Section for styling  AttendanceCam component*/
 const styles = StyleSheet.create({
   container: {
     flex: 1,
